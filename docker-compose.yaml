@@ -1,0 +1,31 @@
+services:
+  app:
+    container_name: app
+    restart: always
+    build: ./
+    command: ./crypto-project
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_DB=DB_NAME
+      - POSTGRES_USER=DB_USER
+      - POSTGRES_PASSWORD=DB_PASSWORD
+    networks:
+      - pp
+
+  db:
+    container_name: database
+    restart: always
+    image: postgres:17.4
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=DB_NAME
+      - POSTGRES_USER=DB_USER
+      - POSTGRES_PASSWORD=DB_PASSWORD
+    networks:
+      - pp
+
+networks:
+  pp:
+    driver: bridge

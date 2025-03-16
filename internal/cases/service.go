@@ -123,6 +123,7 @@ func (s *Service) ActualizeRates(ctx context.Context) error {
 }
 
 func (s *Service) processNotExistingTitles(ctx context.Context, titles []string) error {
+	// получаем список что у нас есть
 	storedCoins, err := s.Storage.GetCoinsList(ctx)
 	if err != nil {
 		return errors.Wrap(err, "failed to get coins list")
@@ -130,12 +131,14 @@ func (s *Service) processNotExistingTitles(ctx context.Context, titles []string)
 
 	allExistingTitles := make(map[string]struct{}, len(storedCoins))
 
+	//все что есть
 	for _, title := range storedCoins {
 		allExistingTitles[title] = struct{}{}
 	}
 
 	notStoredCoins := make([]string, 0)
 
+	//
 	for _, title := range titles {
 		if _, ok := allExistingTitles[title]; !ok {
 			notStoredCoins = append(notStoredCoins, title)

@@ -1,18 +1,24 @@
-package entities
+package entities_test
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
+
+	"crypto-project/internal/entities"
 )
 
 func TestNewCoin(t *testing.T) {
+	t.Parallel()
+
 	testTable := []struct {
 		Name     string
 		Title    string
 		Cost     float64
 		ActualAt time.Time
 		WantErr  bool
+		ResErr   error
 	}{
 		{
 			Name:     "Valid data",
@@ -27,6 +33,7 @@ func TestNewCoin(t *testing.T) {
 			Cost:     125.2,
 			ActualAt: time.Now(),
 			WantErr:  true,
+			ResErr:   entities.ErrInvalidParam,
 		},
 		{
 			Name:     "Invalid cost",
@@ -34,6 +41,7 @@ func TestNewCoin(t *testing.T) {
 			Cost:     0,
 			ActualAt: time.Now(),
 			WantErr:  true,
+			ResErr:   entities.ErrInvalidParam,
 		},
 		{
 			Name:     "Zero ActualAt",
@@ -41,16 +49,23 @@ func TestNewCoin(t *testing.T) {
 			Cost:     125.2,
 			ActualAt: time.Time{},
 			WantErr:  true,
+			ResErr:   entities.ErrInvalidParam,
 		},
 	}
-	for _, testCase := range testTable {
-		t.Run(testCase.Name, func(*testing.T) {
-			_, err := NewCoin(testCase.Title, testCase.Cost, testCase.ActualAt)
-			if testCase.WantErr {
-				assert.Error(t, err, "Expected an error for test case:"+testCase.Name)
-			} else {
-				assert.NoError(t, err, "Did not expect an error for test case:"+testCase.Name)
+	for _, tc := range testTable {
+		t.Run(tc.Name, func(t *testing.T) {
+			coin, err := entities.NewCoin(tc.Title, tc.Cost, tc.ActualAt)
+			if tc.WantErr {
+				require.ErrorIs(t, err, tc.ResErr)
+				require.Nil(t, coin)
+				return
 			}
+			require.NoError(t, err)
+			require.Equal(t, &entities.Coin{
+				Title:    tc.Title,
+				Cost:     tc.Cost,
+				ActualAt: tc.ActualAt,
+			}, coin)
 		})
 	}
 }

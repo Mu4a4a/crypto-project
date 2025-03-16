@@ -1,0 +1,9 @@
+provider:
+  baseURL: "https://min-api.cryptocompare.com/data/pricemulti"
+  apiKey: "a62186340dcbc1ad38a9ad2197f0fec2dc277f66468ea86ae6708aff64e4a24e"
+  currency: "USD"
+
+db:
+  host: "database"
+  port: "5432"
+  sslMode: "disable"
