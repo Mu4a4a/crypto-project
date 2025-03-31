@@ -1,16 +1,23 @@
-FROM golang:1.22.4
-
-RUN go version
+FROM golang:1.23.7-alpine3.21 AS builder
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+COPY . ./
+
 RUN go mod download
 
-COPY ./ ./
+RUN go build -o /app/cryptoproject ./cmd/main.go
 
-RUN rm -rf crypto-project
-RUN go build -o crypto-project ./cmd/main.go
-RUN chmod +x /app/crypto-project
+CMD ["/app/cryptoproject"]
 
-CMD ["./crypto-project"]
+FROM alpine:3.21 as runner
+
+WORKDIR /app
+
+COPY --from=builder /app/cryptoproject /app/
+COPY --from=builder /app/migrations /app/migrations
+COPY ./config/config.yaml ./.env /app/
+
+RUN chmod +x /app/cryptoproject
+
+CMD ["/app/cryptoproject"]

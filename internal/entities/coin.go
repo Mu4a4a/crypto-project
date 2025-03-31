@@ -7,9 +7,9 @@ import (
 )
 
 type Coin struct {
-	Title    string
-	Cost     float64
-	ActualAt time.Time
+	Title    string    `json:"title"`
+	Cost     float64   `json:"cost"`
+	ActualAt time.Time `json:"actual_at"`
 }
 
 func NewCoin(title string, cost float64, actualAt time.Time) (*Coin, error) {

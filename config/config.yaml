@@ -1,9 +1,16 @@
+http_server:
+  port: ":8080"
+
 provider:
-  baseURL: "https://min-api.cryptocompare.com/data/pricemulti"
-  apiKey: "a62186340dcbc1ad38a9ad2197f0fec2dc277f66468ea86ae6708aff64e4a24e"
+  base_url: "https://min-api.cryptocompare.com/data/pricemulti"
   currency: "USD"
+  timeout: "50"
 
 db:
-  host: "database"
+  conn_string: "postgresql://postgres:password@postgres:5432/coins?sslmode=disable&pool_max_conns=10"
+  host: "db"
   port: "5432"
-  sslMode: "disable"
+  ssl_mode: "disable"
+
+logger:
+  level: "info"
